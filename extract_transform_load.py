@@ -23,7 +23,7 @@ def extractor(path) :
 
     for k,v in data.items() :
         if k.startswith('interictal') or k.startswith('preictal') :
-            return v[0][0][0]
+            return [v[0][0][0],is_preictal]
 
     return None
 
