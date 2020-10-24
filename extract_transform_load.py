@@ -23,11 +23,11 @@ def extractor(path) :
 
     for k,v in data.items() :
         if k.startswith('interictal') or k.startswith('preictal') :
-            return [v[0][0][0],is_preictal]
+            return v[0][0][0],is_preictal
 
     return None
 
 if __name__ == '__main__' :
-    data = extractor('./input/Patient_1/Patient_1/Patient_1_preictal_segment_0001.mat')
+    data = extractor('./input/Patient_1/Patient_1/Patient_1_interictal_segment_0001.mat')
 
     print(data)
