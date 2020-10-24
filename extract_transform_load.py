@@ -19,7 +19,7 @@ def extractor(path) :
     assert 'interictal' in filename or 'preictal' in filename, f'File must be interictal or preictal. ' \
                                                                f'You probably passed a test file. Your file: {path}'
 
-    y = 1 if 'preictal' in filename else 0
+    is_preictal = 1 if 'preictal' in filename else 0
 
     for k,v in data.items() :
         if k.startswith('interictal') or k.startswith('preictal') :
