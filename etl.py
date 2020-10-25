@@ -36,6 +36,11 @@ class ETL :
         types = ['interictal_segment', 'preictal_segment']
         paths = []
 
+        if not os.path.isdir('./input'):
+            os.mkdir('./input')
+            print(f'Add EEG data to the input folder and run this program again')
+            quit()
+
         for root, dirs, files in os.walk(self.dir):
             for i, file in enumerate(files):
                 if type(name) == str :

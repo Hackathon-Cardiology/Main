@@ -7,6 +7,9 @@ import random
 sys.path.append("./")
 from etl import ETL
 
+if not os.path.isdir('./input') :
+    os.mkdir('./input')
+
 
 def seed_everything(seed=0) :
     random.seed(seed)
