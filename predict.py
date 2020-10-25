@@ -11,7 +11,7 @@ model = tf.keras.models.load_model('./model')
 print(X.shape)
 predictions = np.array(model.predict(X)).astype(np.float64)
 
-from sklearn.metrics import log_loss,accuracy_score,roc_auc_score
+from sklearn.metrics import log_loss,accuracy_score,roc_auc_score,plot_roc_curve,confusion_matrix
 
 print('\nlog loss:')
 print(log_loss(y_true=y,y_pred=predictions,labels=[0,1]))
@@ -29,3 +29,4 @@ for i in range(len(predictions)) :
     else : acc_preds[i] = 0
 print(accuracy_score(y_true=y,y_pred=acc_preds))
 
+print(confusion_matrix())
