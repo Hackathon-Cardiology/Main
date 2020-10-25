@@ -17,26 +17,24 @@ def seed_everything(seed=0) :
 seed_everything(seed:=42)
 
 class ETL :
-    def __init__(self,dir,name='Patient_1',num_samples=None):
+    def __init__(self,dir,name='Patient_1',num_samples=None,shuffle=False):
         self.dir = dir
         self.name = name
-        self.interictal_paths,self.preictal_paths = self.get_paths(dir=dir,name=name)
-        self.X,self.y = self.load_from_paths(interictal_paths=self.interictal_paths,
-                                             preictal_paths=self.preictal_paths, num_samples=num_samples,
+        self.paths = self.get_paths(dir=dir,name=name,shuffle=shuffle)
+        self.X,self.y = self.load_from_paths(self.paths, num_samples=num_samples,
                      starting_point=0)
 
     def extract_transform_load(self):
         return self.X,self.y
 
-    def get_paths(self,dir,name,seed=42) :
+    def get_paths(self,dir,name,seed=42,shuffle=False) :
         """
 
         :return: lists of interictal and preictal paths to put in a dataset
         """
 
         types = ['interictal_segment', 'preictal_segment']
-        interictal_paths = []
-        preictal_paths = []
+        paths = []
 
         for root, dirs, files in os.walk(self.dir):
             for i, file in enumerate(files):
@@ -47,22 +45,22 @@ class ETL :
                 segment = path[:-9]
 
                 if segment.endswith(types[0]):
-                    interictal_paths.append(path)
+                    paths.append(path)
                     continue
                 if segment.endswith(types[1]):
-                    preictal_paths.append(path)
+                    paths.append(path)
                     continue
                 # there are test file types with no answer for a kaggle competition, so skip them
 
-        assert len(interictal_paths) > 0, f'No files found with name {name}'
+        assert len(paths) > 0, f'No files found with name {name}'
 
         # shuffle paths
-        random.Random(seed).shuffle(interictal_paths)
-        random.Random(seed).shuffle(preictal_paths)
+        if shuffle :
+            random.Random(seed).shuffle(paths)
 
-        return interictal_paths,preictal_paths
+        return paths
 
-    def load_from_paths(self, interictal_paths, preictal_paths, num_samples=None, starting_point=0, seed=seed):
+    def load_from_paths(self, paths, num_samples=None, starting_point=0, seed=seed):
         """
 
         :param interictal_paths: list of interictal data
@@ -78,20 +76,17 @@ class ETL :
         X = []
         Y = []
 
-        paths = interictal_paths + preictal_paths
-        random.Random(seed).shuffle(paths)
-
         if num_samples is None :
             num_samples = len(paths)
 
         # for each file, preprocess the file and add to dataset
-        if starting_point >= len(interictal_paths) : return
+        if starting_point >= len(paths) : return
         if starting_point + num_samples > len(paths) : num_samples = len(paths) - starting_point
+
 
         for i in range(starting_point,num_samples + starting_point) :
             path = paths[i]
             x,y = extractor(path)
-
 
             d_array = x[12,:]
 
