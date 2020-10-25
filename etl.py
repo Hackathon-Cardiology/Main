@@ -38,18 +38,28 @@ class ETL :
 
         for root, dirs, files in os.walk(self.dir):
             for i, file in enumerate(files):
-                if not name in file : continue
-                if not file.endswith('.mat') : continue
+                if type(name) == str :
+                    if not name in file : continue
+                    if not file.endswith('.mat') : continue
 
-                path = os.path.join(root, file)
-                segment = path[:-9]
+                    path = os.path.join(root, file)
+                    segment = path[:-9]
 
-                if segment.endswith(types[0]):
-                    paths.append(path)
-                    continue
-                if segment.endswith(types[1]):
-                    paths.append(path)
-                    continue
+                    if segment.endswith(types[0]) or segment.endswith(types[1]):
+                        paths.append(path)
+                        continue
+
+                else : # then name is a list
+                    for n in name :
+                        if n in file :
+                            path = os.path.join(root, file)
+                            segment = path[:-9]
+
+                            if segment.endswith(types[0]) or segment.endswith(types[1]):
+                                paths.append(path)
+
+                            continue
+
                 # there are test file types with no answer for a kaggle competition, so skip them
 
         assert len(paths) > 0, f'No files found with name {name}'
@@ -91,13 +101,15 @@ class ETL :
             d_array = x[12,:]
 
             secs = len(d_array) / 5000  # Number of seconds in signal X
-            samps = secs * 500  # Number of samples to downsample
-            dsample_array = resample(d_array, 300000)
+            samps = int(secs * 500)  # sample 500 times a second
+            dsample_array = resample(d_array, samps)
 
             lst = list(range(300000))  # 3000000  datapoints initially
-            for m in lst[::2000]:  # 5000 initial
-                # Create a spectrogram every 2 second
-                p_secs = dsample_array[m:m + 2000]  # d_array[0][m:m+15000]
+
+            span = 2000
+            for m in lst[::span]:  # 5000 initial
+                # make spectrograms every 2 seconds
+                p_secs = dsample_array[m:m + span]  # d_array[0][m:m+15000]
                 p_f, p_t, p_Sxx = spectrogram(p_secs, fs=500, return_onesided=False)
                 p_SS = np.log1p(p_Sxx)
                 arr = p_SS[:] / np.max(p_SS)
