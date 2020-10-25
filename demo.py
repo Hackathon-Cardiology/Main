@@ -7,6 +7,7 @@ import random
 sys.path.append("./")
 from etl import ETL
 
+
 def seed_everything(seed=0) :
     random.seed(seed)
     os.environ['PYTHONHASHSEED'] = str(seed)
@@ -75,4 +76,4 @@ for i in range(len(predictions)) :
     else : acc_preds[i] = 0
 print(accuracy_score(y_true=y_test,y_pred=acc_preds))
 
-print(confusion_matrix(y_test,acc_preds))
+print(f'\nConfusion Matrix :\n{confusion_matrix(y_test,acc_preds)}')
