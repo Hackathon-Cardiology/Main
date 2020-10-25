@@ -28,6 +28,14 @@ def extractor(path) :
     return None
 
 if __name__ == '__main__' :
-    data = extractor('./input/Patient_1/Patient_1/Patient_1_interictal_segment_0001.mat')
+    import numpy as np
 
-    print(data)
+    data = extractor('./input/Patient_1/Patient_1/Patient_1_preictal_segment_0001.mat')
+    print(np.array(data[0]).shape)
+
+    data = extractor('./input/Patient_2/Patient_2/Patient_2_interictal_segment_0001.mat')
+    print(data[0].shape)
+    data = extractor('./input/Patient_2/Patient_2/Patient_2_interictal_segment_0001.mat')
+    print(data[0].shape)
+    data = extractor('./input/Patient_2/Patient_2/Patient_2_interictal_segment_0001.mat')
+    print(data[0].shape)
